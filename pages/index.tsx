@@ -2,8 +2,13 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import firebase from 'firebase/compat/app';
+import { initializeApp } from 'firebase/app';
+import { useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
 
 const Home: NextPage = () => {
+
   return (
     <div className={styles.container}>
       <Head>
