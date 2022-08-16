@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
     "firebase": "^9.9.2",
     "firebaseui": "^6.0.1",
+    "fs": "^0.0.1-security",
     "jquery": "^3.6.0",
     "next": "12.2.5",
     "react": "18.2.0",
@@ -21,6 +23,7 @@
     "@types/node": "18.7.3",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
+    "dotenv-webpack": "^8.0.0",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.5",
     "typescript": "4.7.4"

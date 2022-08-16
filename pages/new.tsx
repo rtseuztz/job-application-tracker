@@ -1,31 +1,17 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import newStyles from '../styles/New.module.css'
-import $ from 'jquery'
-import { FormEvent, MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useRef, useState } from 'react';
 import 'firebaseui/dist/firebaseui.css'
-import firebase from 'firebase/compat/app';
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-const firebaseConfig = {
-  apiKey: "AIzaSyAJG719mWF0NIjf-YtVG2RqJV081jOqbs0",
-  authDomain: "social-media-manager-b449a.firebaseapp.com",
-  projectId: "social-media-manager-b449a",
-  storageBucket: "social-media-manager-b449a.appspot.com",
-  messagingSenderId: "606247064791",
-  appId: "1:606247064791:web:f5dc7ce2653e35354dcc92",
-  measurementId: "G-TGHNY65FH9"
-};
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import * as Auth from '../components/auth'
+import Layout from '../components/layout';
 
+const app = Auth.app
+const auth = Auth.auth
 
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(app);
-
-const Home: NextPage = () => {
+const NewUser: NextPage = () => {
   const container =useRef(null);
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState("")
@@ -36,6 +22,7 @@ const Home: NextPage = () => {
     const password = (selector.querySelector("#password") as HTMLInputElement).value
     if (!email || !password)
       return;
+      event.preventDefault();
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in 
@@ -79,5 +66,11 @@ const Home: NextPage = () => {
     </div>
   )
 }
-
-export default Home
+// NewUser.getLayout = function getLayout(page: ReactNode) {
+//   return (
+//     <Layout>
+//       {page}
+//     </Layout>
+//   )
+// }
+export default NewUser

@@ -4,10 +4,11 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import firebase from 'firebase/compat/app';
 import { initializeApp } from 'firebase/app';
-import { useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
+import Layout from '../components/layout';
 
-const Home: NextPage = () => {
+const Home: NextPage  = () => {
 
   return (
     <div className={styles.container}>
@@ -63,5 +64,11 @@ const Home: NextPage = () => {
     </div>
   )
 }
-
+// Home.getLayout = function getLayout(page: ReactNode) {
+//   return (
+//     <Layout>
+//       {page}
+//     </Layout>
+//   )
+// }
 export default Home
