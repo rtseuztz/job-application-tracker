@@ -11,14 +11,24 @@ import { useAuth } from '../components/authContext'
 
 const NavBar: NextPage = () => {
 
-  const {getUser}: any = useAuth()
+  const {getUser, signOut}: any = useAuth()
   const user = getUser();
+  const signUserOut = () => {
+    signOut()
+  }
     return (
         <nav className={styles.navBar}>
           <span className={styles.logo}>
             <Image src="/hamburger.svg" alt="More options" title="More options..." width={72} height={22} />
           </span>
-          {user == null ? <a href="login">Log in</a> : <div>{user.email}</div>}
+          {user == null ? 
+          <a href="login">Log in</a>
+           : 
+           <>
+            <div>{user.email}</div>
+            <button onClick={signUserOut}>Sign out</button>
+           </>
+           }
         </nav>
     )
 }

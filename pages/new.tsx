@@ -27,6 +27,7 @@ const NewUser: NextPage = () => {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
+        window.location.href = '/'
         setWarning("")
         // ...
       })
@@ -44,7 +45,7 @@ const NewUser: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Social Media Manager</title>
+        <title>Create Account</title>
         <meta name="description" content="Manage you social media today" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

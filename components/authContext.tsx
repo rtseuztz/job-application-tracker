@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, User } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react'
 import { LayoutProps } from './layout';
-
+// https://stackoverflow.com/questions/68104551/react-firebase-authentication-and-usecontext
 const firebaseConfig = {
     apiKey: process.env.apiKey,
     authDomain: process.env.authDomain,
