@@ -1,0 +1,13 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.modal > div {
+    /* position: fixed; */
+}
+.arrow {
+    height: 10%;
+    width: 10%;
+    fill: rgb(84, 84, 84);
+}

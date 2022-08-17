@@ -4,17 +4,15 @@ import styles from '../styles/Home.module.css'
 import newStyles from '../styles/New.module.css'
 import { FormEvent, ReactNode, useRef, useState } from 'react';
 import 'firebaseui/dist/firebaseui.css'
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import * as Auth from '../components/auth'
+import { createUserWithEmailAndPassword, User, UserCredential } from "firebase/auth";
 import Layout from '../components/layout';
-
-const app = Auth.app
-const auth = Auth.auth
+import { useAuth } from '../components/authContext';
 
 const NewUser: NextPage = () => {
   const container =useRef(null);
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState("")
+  const {signUp}: any = useAuth()
   const addUser = (event: FormEvent<HTMLFormElement>) => {
     const selector = container.current || document.body;
     setLoading(true);
@@ -23,15 +21,16 @@ const NewUser: NextPage = () => {
     if (!email || !password)
       return;
       event.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    
+    signUp(email, password)
+      .then((userCredential: UserCredential) => {
         // Signed in 
         const user = userCredential.user;
         window.location.href = '/'
         setWarning("")
         // ...
       })
-      .catch((error) => {
+      .catch((error: any) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         setWarning(errorMessage)

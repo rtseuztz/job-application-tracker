@@ -8,11 +8,16 @@ import Layout from '../components/layout'
 import { AuthProvider } from '../components/authContext'
 
 
-
 function MyApp({ Component, pageProps }: AppProps) {
   console.log("app running")
 
-  return <AuthProvider><Layout><Component {...pageProps} /></Layout></AuthProvider>
+  return (
+    <AuthProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </AuthProvider>
+  )
 }
 
 export default MyApp
