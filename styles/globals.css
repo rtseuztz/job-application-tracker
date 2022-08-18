@@ -15,18 +15,6 @@ a {
   box-sizing: border-box;
 }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 2rem 2rem 0rem 2rem;
-}
-nav > a:hover,
-nav > a:focus,
-nav > a:active {
-  color: #0070f3;
-  border-color: #0070f3;
-}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
