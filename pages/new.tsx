@@ -18,15 +18,13 @@ const NewUser: NextPage = () => {
     setLoading(true);
     const email = (selector.querySelector("#email") as HTMLInputElement).value
     const password = (selector.querySelector("#password") as HTMLInputElement).value
-    if (!email || !password)
-      return;
-      event.preventDefault();
+    event.preventDefault();
     
     signUp(email, password)
       .then((userCredential: UserCredential) => {
         // Signed in 
         const user = userCredential.user;
-        window.location.href = '/'
+        // window.location.href = '/'
         setWarning("")
         // ...
       })
@@ -34,7 +32,6 @@ const NewUser: NextPage = () => {
         const errorCode = error.code;
         const errorMessage = error.message;
         setWarning(errorMessage)
-        event.preventDefault();
         // ..
       })
       .finally(() => {
@@ -53,7 +50,7 @@ const NewUser: NextPage = () => {
           <div className={[newStyles.absolute, newStyles.columnFlex].join(" ")}>
             <h1 className={styles.title}>Welcome</h1>
             <input id="email" className={newStyles.subtitle} placeholder="email" disabled={loading}/>
-            <input id="password" className={newStyles.subtitle} placeholder="password" disabled={loading}></input>
+            <input type="password" id="password" className={newStyles.subtitle} placeholder="password" disabled={loading}></input>
             <button type="submit">Create Account</button>
           </div>
           {loading ? <div className={newStyles.absolute}>

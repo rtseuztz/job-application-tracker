@@ -1,5 +1,6 @@
 .navBar {
     display: flex;
+    position: fixed;
     justify-content: space-between;
     width: 100%;
     padding: 2rem 2rem 0rem 2rem;
@@ -23,4 +24,12 @@
 }
 .loginBtn {
     width: 80px;
+}
+.flexCol {
+  display: flex;
+  flex-direction: column;
+}
+.flexRow {
+  display: flex;
+  flex-direction: row;
 }

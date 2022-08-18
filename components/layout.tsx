@@ -11,7 +11,7 @@ const Layout = ({ children }: LayoutProps) => {
     return (
         <>
           <Navbar />
-            {children}
+            <div style={{paddingTop: 50}}>{children}</div>
           <Footer />
         </>
       )

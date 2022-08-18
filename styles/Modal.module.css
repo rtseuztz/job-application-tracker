@@ -7,7 +7,13 @@
     /* position: fixed; */
 }
 .arrow {
-    height: 10%;
-    width: 10%;
+    height: 6%;
+    width: 6%;
     fill: rgb(84, 84, 84);
+}
+.modalContent {
+    background-color: rgb(84, 84, 84);
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
 }

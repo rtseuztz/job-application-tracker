@@ -5,14 +5,15 @@ import styles from '../styles/Home.module.css'
 import navStyles from '../styles/Navbar.module.css'
 import firebase from 'firebase/compat/app';
 import { initializeApp } from 'firebase/app';
-import { useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { useAuth } from '../components/authContext'
 import { Modal } from './modal';
 const NavBar: NextPage = () => {
   const loginBtnRef =useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const {getUser, signOut}: any = useAuth()
+  const [warning, setWarning] = useState("")
+  const {getUser, signOut, login}: any = useAuth()
   const user = getUser();
   const signUserOut = () => {
     signOut()
@@ -23,6 +24,7 @@ const NavBar: NextPage = () => {
   }
   const hideLoginModal = () => {
     setShowLoginModal(false)
+    setWarning("")
   }
 
   
@@ -39,6 +41,22 @@ const NavBar: NextPage = () => {
     document.body.addEventListener("click", handleClickOutside);
   }, [])
 
+  const loginUser = async (e: FormEvent) => {
+    if (!modalRef.current) return;
+    const userName = modalRef.current.querySelector("#email") as HTMLInputElement
+    const password = modalRef.current.querySelector("#password") as HTMLInputElement
+    e.preventDefault();
+    if (userName && password) {
+      login(userName.value, password.value)
+        .then((res: any) => {
+          hideLoginModal()
+          setWarning("")
+        })
+        .catch((error: any) => {
+          setWarning(error.message)
+        })
+    }
+  }
     return (
         <nav className={navStyles.navBar}>
           <span className={[styles.logo, navStyles.hamburger].join(" ")}>
@@ -49,14 +67,20 @@ const NavBar: NextPage = () => {
             <div ref={modalRef} className={navStyles.loginContainer}>
               <button ref={loginBtnRef} disabled={shouldShowLoginModal} className={navStyles.loginBtn} id="loginButton" onClick={showLoginModal}>Log in</button>
               <Modal show={shouldShowLoginModal} element={loginBtnRef.current as Element}>
-
+                <form action="/" className={navStyles.flexCol} onSubmit={e => loginUser(e)}>
+                  <input id="email" placeholder='email'></input>
+                  <input type="password" id="password" placeholder='password'></input>
+                  <button type="submit">login</button>
+                  {warning != "" ? <div>{warning}</div> : <></>}
+                </form>
+                
               </Modal>
             </div>
             : 
-            <>
+            <div className={navStyles.flexRow}>
               <div>{user.email}</div>
               <button onClick={signUserOut}>Sign out</button>
-            </>
+            </div>
             }
           </>
 
