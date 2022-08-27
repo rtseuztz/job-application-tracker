@@ -6,23 +6,23 @@ import firebase from 'firebase/compat/app';
 import { initializeApp } from 'firebase/app';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
-import Layout from '../components/layout';
+import Layout from '../components/layout/layout';
 
 const Home: NextPage  = () => {
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>Social Media Manager</title>
+        <title>Job Tracker</title>
         <meta name="description" content="Manage you social media today" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
 
-        <h1 className={styles.title}>
+        {/* <h1 className={styles.title}>
           A smarter way to handle social media
-        </h1>
+        </h1> */}
 
         <div className={styles.grid}>
           <a href="new" className={styles.card}>
@@ -64,11 +64,4 @@ const Home: NextPage  = () => {
     </div>
   )
 }
-// Home.getLayout = function getLayout(page: ReactNode) {
-//   return (
-//     <Layout>
-//       {page}
-//     </Layout>
-//   )
-// }
 export default Home

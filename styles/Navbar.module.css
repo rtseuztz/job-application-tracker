@@ -11,13 +11,19 @@
     color: #0070f3;
     border-color: #0070f3;
   }
+.leftBtns {
+  display: flex;
+  align-items: center;
+}
 .hamburger {
     left: 1%;
+    display: flex;
+    height: 2em;
+    align-items: center;
 }
 .loginContainer {
     display: flex;
     position: fixed;
-    align-items: flex-end;
     right: 1%;
     flex-direction: column;
     align-items: flex-end;
@@ -25,6 +31,15 @@
 .loginBtn {
     width: 80px;
 }
+.navBar .button {
+  background-color: grey;
+  border: solid transparent 2px;
+  font-size: 14px;
+  margin-left: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .flexCol {
   display: flex;
   flex-direction: column;
