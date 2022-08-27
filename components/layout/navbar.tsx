@@ -1,16 +1,17 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
-import navStyles from '../styles/Navbar.module.css'
+import styles from '../../styles/Home.module.css'
+import navStyles from '../../styles/Navbar.module.css'
 import firebase from 'firebase/compat/app';
 import { initializeApp } from 'firebase/app';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { getAuth } from 'firebase/auth';
-import { useAuth } from '../components/authContext'
-import { Modal } from './modal';
+import { useAuth } from '../../components/authContext'
+import { Modal } from '../modal';
+import Link from 'next/link'
 const NavBar: NextPage = () => {
-  const loginBtnRef =useRef<HTMLButtonElement>(null);
+  const loginBtnRef =useRef<HTMLAnchorElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [warning, setWarning] = useState("")
   const {getUser, signOut, login}: any = useAuth()
@@ -57,15 +58,29 @@ const NavBar: NextPage = () => {
         })
     }
   }
+  const createAccount = () => {
+    window.location.href = "/new"
+  }
     return (
         <nav className={navStyles.navBar}>
-          <span className={[styles.logo, navStyles.hamburger].join(" ")}>
-            <Image src="/hamburger.svg" alt="More options" title="More options..." width={72} height={22} />
-          </span>
+
+          <div className={navStyles.leftBtns}>
+            <span className={[styles.logo, navStyles.hamburger].join(" ")}>
+              <Image src="/hamburger.svg" alt="More options" title="More options..." width={72} height={22} />
+            </span>
+            <Link href="/">
+              Job Tracker
+            </Link>
+          </div>
           <>
             {user == null ? 
             <div ref={modalRef} className={navStyles.loginContainer}>
-              <button ref={loginBtnRef} disabled={shouldShowLoginModal} className={navStyles.loginBtn} id="loginButton" onClick={showLoginModal}>Log in</button>
+              <div className={navStyles.buttonList}>
+                <Link href="/new">
+                  <a className={navStyles.button}>Create an account</a>
+                </Link>
+                <a ref={loginBtnRef} className={navStyles.button} id="loginButton" onClick={showLoginModal}>Log in</a>
+              </div>
               <Modal show={shouldShowLoginModal} element={loginBtnRef.current as Element}>
                 <form action="/" className={navStyles.flexCol} onSubmit={e => loginUser(e)}>
                   <input id="email" placeholder='email'></input>

@@ -5,7 +5,7 @@ import newStyles from '../styles/New.module.css'
 import { FormEvent, ReactNode, useRef, useState } from 'react';
 import 'firebaseui/dist/firebaseui.css'
 import { createUserWithEmailAndPassword, User, UserCredential } from "firebase/auth";
-import Layout from '../components/layout';
+import Layout from '../components/layout/layout';
 import { useAuth } from '../components/authContext';
 
 const NewUser: NextPage = () => {
@@ -24,7 +24,7 @@ const NewUser: NextPage = () => {
       .then((userCredential: UserCredential) => {
         // Signed in 
         const user = userCredential.user;
-        // window.location.href = '/'
+        window.location.href = '/'
         setWarning("")
         // ...
       })

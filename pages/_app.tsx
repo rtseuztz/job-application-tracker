@@ -1,10 +1,10 @@
 import '../styles/globals.css'
 import styles from '../styles/Main.module.css'
 import type { AppProps } from 'next/app'
-import NavBar from '../components/navbar'
-import Footer from '../components/footer'
+import NavBar from '../components/layout/navbar'
+import Footer from '../components/layout/footer'
 import { initializeApp } from 'firebase/app'
-import Layout from '../components/layout'
+import Layout from '../components/layout/layout'
 import { AuthProvider } from '../components/authContext'
 
 
