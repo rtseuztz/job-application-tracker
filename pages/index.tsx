@@ -7,9 +7,17 @@ import { initializeApp } from 'firebase/app';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import Layout from '../components/layout/layout';
+import { useData, job } from '../components/authContext';
+import _ from 'underscore';
+
+const formatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 const Home: NextPage  = () => {
-
+  const {getData}: any = useData()
+  const userData: Array<job> = getData();
   return (
     <div className={styles.container}>
       <Head>
@@ -19,45 +27,34 @@ const Home: NextPage  = () => {
       </Head>
 
       <main className={styles.main}>
-
-        {/* <h1 className={styles.title}>
-          A smarter way to handle social media
-        </h1> */}
-
-        <div className={styles.grid}>
-          <a href="new" className={styles.card}>
-            <h2>Create an account &rarr;</h2>
-            <p>Set up a free account to get started</p>
-          </a>
-
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className={styles.jobTable}>
+          <div className={styles.jobTableHeader}>
+            <div>Jobs</div>
+            <div>Add job</div>
+          </div>
+          {_.map(userData, data => {
+            return ( 
+              <div className={styles.job}>
+                <div>
+                  {data.jid}
+                </div>
+                <div>
+                  {data.company}
+                </div>
+                <div>
+                  {data.title}
+                </div>
+                <div>
+                  {formatter.format(data.salary)}
+                </div>
+                <div className={styles.hidden}>
+                  trash
+                </div>
+              </div>
+            )
+          })}
         </div>
+        
       </main>
 
 

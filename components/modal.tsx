@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { children, element } from 'svelte/internal';
 import styles from '../styles/Modal.module.css'
 
 

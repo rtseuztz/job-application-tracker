@@ -7,14 +7,17 @@ import firebase from 'firebase/compat/app';
 import { initializeApp } from 'firebase/app';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { getAuth } from 'firebase/auth';
-import { useAuth } from '../../components/authContext'
+import { useAuth, useData } from '../../components/authContext'
 import { Modal } from '../modal';
 import Link from 'next/link'
+import _ from 'underscore'
 const NavBar: NextPage = () => {
   const loginBtnRef =useRef<HTMLAnchorElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [warning, setWarning] = useState("")
   const {getUser, signOut, login}: any = useAuth()
+  const {getData}: any = useData()
+  const userData = getData();
   const user = getUser();
   const signUserOut = () => {
     signOut()
@@ -61,6 +64,7 @@ const NavBar: NextPage = () => {
   const createAccount = () => {
     window.location.href = "/new"
   }
+
     return (
         <nav className={navStyles.navBar}>
 
