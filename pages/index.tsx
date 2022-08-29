@@ -9,11 +9,8 @@ import { getAuth } from 'firebase/auth';
 import Layout from '../components/layout/layout';
 import { useData, job } from '../components/authContext';
 import _ from 'underscore';
-
-const formatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-});
+import BasicTable from '../components/table';
+import EnhancedTable from '../components/table';
 
 const Home: NextPage  = () => {
   const {getData}: any = useData()
@@ -28,31 +25,11 @@ const Home: NextPage  = () => {
 
       <main className={styles.main}>
         <div className={styles.jobTable}>
+          {EnhancedTable(userData)}
           <div className={styles.jobTableHeader}>
             <div>Jobs</div>
             <div>Add job</div>
           </div>
-          {_.map(userData, data => {
-            return ( 
-              <div className={styles.job}>
-                <div>
-                  {data.jid}
-                </div>
-                <div>
-                  {data.company}
-                </div>
-                <div>
-                  {data.title}
-                </div>
-                <div>
-                  {formatter.format(data.salary)}
-                </div>
-                <div className={styles.hidden}>
-                  trash
-                </div>
-              </div>
-            )
-          })}
         </div>
         
       </main>
