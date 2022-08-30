@@ -26,10 +26,6 @@ const Home: NextPage  = () => {
       <main className={styles.main}>
         <div className={styles.jobTable}>
           {EnhancedTable(userData)}
-          <div className={styles.jobTableHeader}>
-            <div>Jobs</div>
-            <div>Add job</div>
-          </div>
         </div>
         
       </main>

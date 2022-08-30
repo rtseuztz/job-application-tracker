@@ -21,11 +21,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { job } from './authContext';
+import { DataContextInterface, job } from './authContext';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
-
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { useData } from './authContext'
 interface Data {
   calories: number;
   carbs: number;
@@ -91,13 +95,13 @@ const headCells: readonly HeadCell[] = [
   },
   {
     id: 'company',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Company',
   },
   {
     id: 'title',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: 'Job Title',
   },
@@ -183,6 +187,21 @@ interface EnhancedTableToolbarProps {
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   const { numSelected } = props;
   const [jobModalOpen, setJobModalOpen] = React.useState<boolean>(false)
+  const newJobModalRef = React.useRef(null);
+  const data: DataContextInterface | null = useData()
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+    if (!newJobModalRef.current)
+      return
+    const formData = new FormData(newJobModalRef.current)
+    const company: string = formData.get('company') as string ?? ""
+    const title: string = formData.get('title') as string ?? ""
+    const salary: number = parseFloat(formData.get('salary') as string) ?? 0
+    setJobModalOpen(false);
+    console.log(e);
+    if (data)
+      data.addJob(new Date(), title, company, salary)
+  }
   return (
     <Toolbar
       sx={{
@@ -220,7 +239,16 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         </Tooltip>
         <Dialog
           open={jobModalOpen} onClose={() => setJobModalOpen(false)}>
-            <div>dialog</div>
+            <form ref={newJobModalRef} onSubmit={handleSubmit}>
+              <div>dialog</div>
+              <input name="company" placeholder='company'></input>
+              <input name="title" placeholder='title'></input>
+              <input name="salary" placeholder='salary'></input>
+              <DialogActions>
+                  <Button onClick={() => setJobModalOpen(!jobModalOpen)}>Cancel</Button>
+                  <Button type="submit">Subscribe</Button>
+              </DialogActions>
+            </form>
         </Dialog>
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -368,8 +396,8 @@ export default function EnhancedTable(data?: Array<job>) {
                         >
                           {row.jid}
                         </TableCell>
-                        <TableCell align="right">{row.company}</TableCell>
-                        <TableCell align="right">{row.title}</TableCell>
+                        <TableCell align="left">{row.company}</TableCell>
+                        <TableCell align="left">{row.title}</TableCell>
                         <TableCell align="right">{getFormat.format(row.salary)}</TableCell>
                         <TableCell align="right">{row.uid}</TableCell>
                       </TableRow>
