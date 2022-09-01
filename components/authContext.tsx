@@ -1,10 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, User, UserCredential } from 'firebase/auth';
 import { createContext, useContext, useEffect, useState } from 'react'
-import { getFirestore, getDoc, collection, Firestore, query, where, doc, DocumentData, getDocs, setDoc, addDoc, FieldValue, updateDoc, DocumentReference, arrayUnion, CollectionReference, onSnapshot, DocumentSnapshot, Query, QuerySnapshot } from 'firebase/firestore'
+import { getFirestore, getDoc, collection, Firestore, query, where, doc, DocumentData, getDocs, setDoc, addDoc, FieldValue, updateDoc, DocumentReference, arrayUnion, CollectionReference, onSnapshot, DocumentSnapshot, Query, QuerySnapshot, deleteDoc } from 'firebase/firestore'
 import { LayoutProps } from './layout/layout';
 import _ from 'underscore'
 import { getAllContexts } from 'svelte';
+import { JSDocMemberName } from 'typescript';
 // https://stackoverflow.com/questions/68104551/react-firebase-authentication-and-usecontext
 const firebaseConfig = {
   apiKey: process.env.apiKey,
@@ -37,7 +38,8 @@ export interface DataContextInterface {
   getData: () => Array<job>,
   addJob: (job: newJob) => void,
   getFilters: () => Array<filter>,
-  addFilter: (f: filter) => void,
+  addFilter: (f: newFilter) => void,
+  deleteFilter: (fid: string) => void,
 }
 
 const DataContext = createContext<DataContextInterface>({} as DataContextInterface)
@@ -54,6 +56,12 @@ type jobObj = {
   job: job
 }
 export type filter = {
+  fid: number,
+  key: keyof job,
+  comparator: string,
+  value: string | number | Date
+}
+export type newFilter = {
   key: keyof job,
   comparator: string,
   value: string | number | Date
@@ -125,7 +133,7 @@ export function AuthProvider({ children }: LayoutProps) {
       date: job.date
     });
   }
-  async function addFilter(f: filter) {
+  async function addFilter(f: newFilter) {
     if (!filtersCol || !currentUser) {
       console.error("no user ref")
       return;
@@ -135,6 +143,13 @@ export function AuthProvider({ children }: LayoutProps) {
       comparator: f.comparator,
       value: f.value,
     });
+  }
+  async function deleteFilter(fid: string) {
+    if (!filtersCol || !currentUser) {
+      console.error("no user ref")
+      return;
+    }
+    const docRef = await deleteDoc(doc(filtersCol, fid))
   }
   //   function isAdmin() {
   //     return auth.currentUser.getIdTokenResult()
@@ -237,7 +252,8 @@ export function AuthProvider({ children }: LayoutProps) {
     getData,
     addJob,
     getFilters,
-    addFilter
+    addFilter,
+    deleteFilter
   }
   return (
     <AuthContext.Provider value={value}>

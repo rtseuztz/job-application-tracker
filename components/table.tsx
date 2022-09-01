@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { DataContextInterface, filter, job, newJob } from './authContext';
+import { DataContextInterface, filter, job, newFilter, newJob } from './authContext';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Dialog from '@mui/material/Dialog';
@@ -37,7 +37,6 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { Divider, Drawer, Input, List, TextField } from '@mui/material';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -46,6 +45,7 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { styled, useTheme } from '@mui/material/styles';
+import { flexbox } from '@mui/system';
 
 interface Data {
   calories: number;
@@ -202,7 +202,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
-  searchFunc: (e: any) => void
+  searchFunc: (e: any) => void;
+  setFilterFunc: (filters: filter[]) => void;
 }
 const DrawerHeader = styled('div')(({ theme }: any) => ({
   display: 'flex',
@@ -214,7 +215,7 @@ const DrawerHeader = styled('div')(({ theme }: any) => ({
 }));
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected, searchFunc } = props;
+  const { numSelected, searchFunc, setFilterFunc } = props;
   const [jobModalOpen, setJobModalOpen] = React.useState<boolean>(false)
   const [filterModalOpen, setFilterModalOpen] = React.useState<boolean>(false)
   const newJobModalRef = React.useRef(null);
@@ -245,7 +246,9 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   var filterKey: keyof job = 'company'
   const newFilterRef = React.useRef(null)
   React.useEffect(() => {
-    setFilters(data.getFilters())
+    const filters = data.getFilters()
+    setFilters(filters)
+    setFilterFunc(filters)
   }, [data.getFilters()])
   const addFilter = (e: any) => {
     e.preventDefault();
@@ -255,12 +258,17 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
     const key: keyof job = formData.get('key') as keyof job ?? ""
     const comparator: string = formData.get('comparator') as string ?? ""
     const value: string = formData.get('value') as string ?? ""
-    const filter: filter = {
+    const filter: newFilter = {
       key: key,
       comparator: comparator,
       value: value
     }
     data.addFilter(filter)
+  }
+  const deleteFilter = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+    const id = e.currentTarget.dataset.id
+    if (id)
+      data.deleteFilter(id)
   }
   /**
    * Search
@@ -282,7 +290,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         open={filterModalOpen}
       >
         <DrawerHeader>
-          <IconButton onClick={() => setFilterModalOpen(false)}>
+          <IconButton style={{ transform: "rotate(90deg)" }} onClick={() => setFilterModalOpen(false)}>
             {<ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
@@ -322,7 +330,15 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         <div>
           {filters.map((f) => {
             return (
-              <div>{`${f.key} ${f.comparator} ${f.value}`}</div>
+              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <div>{`${f.key} ${f.comparator} ${f.value}`}</div>
+                <Tooltip title="Delete">
+                  <IconButton data-id={f.fid} onClick={deleteFilter}>
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+
             )
           })}
         </div>
@@ -449,6 +465,7 @@ export default function EnhancedTable(data: Array<job>) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof job>('date');
   const [searchBy, setSearchBy] = React.useState<string>('');
+  const [filterBy, setFilterBy] = React.useState<filter[]>([])
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -520,15 +537,49 @@ export default function EnhancedTable(data: Array<job>) {
     const searchVal = e.target.value;
     setSearchBy(searchVal)
   }
+  const filterFunc = (filters: filter[]) => {
+    setFilterBy(filters)
+  }
+  const compareVals = (val1: string | number | Date, comp: string, val2: string | number | Date): boolean => {
+    let func: any;
+    if (!val1 || !val2) return false
+    switch (comp) {
+      case "is":
+        func = (v1: string, v2: string): boolean => v1 == v2
+        break
+      case "like":
+        func = (v1: string, v2: string): boolean => v1.includes(v2)
+        break
+      case "<":
+        func = (v1: string, v2: string): boolean => parseFloat(v1) < parseFloat(v2)
+        break
+      case ">":
+        func = (v1: string, v2: string): boolean => parseFloat(v1) > parseFloat(v2)
+        break
+    }
+    let retVal: boolean = false
+    try {
+      retVal = func(val1, val2)
+    }
+    catch (e: any) {
+      console.log(e)
+    }
+    return retVal
+  }
   React.useEffect(() => {
     setPage(0)
-    setSortedRows(data.filter(r => (r.company?.includes(searchBy) ?? false) || (r.title?.includes(searchBy) ?? false)))
+    var sortedData = data.filter(r => (r.company?.includes(searchBy) ?? false) || (r.title?.includes(searchBy) ?? false))
+    filterBy.forEach((f: filter) => {
+      sortedData = sortedData.filter((j: job) => {
+        return compareVals(j[f.key], f.comparator, f.value)
+      })
+    })
+    setSortedRows(sortedData)
     console.log(sortedRows)
-  }, [data, searchBy])
+  }, [data, searchBy, filterBy])
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     Math.max(0, rowsPerPage - sortedRows.length)
-  const options = { year: "numeric", month: "long", day: "numeric" }
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -536,7 +587,8 @@ export default function EnhancedTable(data: Array<job>) {
         <Paper sx={{ width: '100%', mb: 2 }}>
           <EnhancedTableToolbar
             numSelected={selected.length}
-            searchFunc={searchFunc} />
+            searchFunc={searchFunc}
+            setFilterFunc={filterFunc} />
           <TableContainer>
             <Table
               style={{ tableLayout: "fixed" }}
