@@ -23,7 +23,7 @@ const Home: NextPage  = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
+      <main className={styles.mainNoCenter}>
         <div className={styles.jobTable}>
           {EnhancedTable(userData)}
         </div>

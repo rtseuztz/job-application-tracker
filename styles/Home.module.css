@@ -11,6 +11,13 @@
   justify-content: center;
   align-items: center;
 }
+.mainNoCenter {
+  min-height:75vh;
+  padding: 4rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 .footer {
   display: flex;
@@ -78,10 +85,11 @@
   justify-content: space-between;
 }
 .jobTable {
-  display: grid;
-  border-radius: 4px;
+  display: flex;
+  align-self: flex-start;
   width: 100%;
   background-color: rgb(35, 35, 35);
+  overflow-y: scroll;
 }
 .job {
   display: grid;
